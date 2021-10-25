@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Random;
 
 public class scheduler {
 	// Instructing the constructor to ignore/suppress the warning "raw types" from List
@@ -25,8 +26,10 @@ public class scheduler {
 			
 			// Splitting the input and initializing it to a list
 			String[] value = input.nextLine().strip().split(",");
+			
 			// Initializing a list of type ArrayList
 			List<String> the_list = new ArrayList<String>();
+			
 			// Iterating over the input list and saving it to the Array List
 			for(int j = 0; j < value.length; j++)
 			{
@@ -39,16 +42,68 @@ public class scheduler {
 		input.close();
 	}
 	
-	public void showDict()
+	public void showDay(String day)
 	{
-		System.out.println(AvailabilityDict.get("Tuesday"));
+		System.out.println(AvailabilityDict.get(day));
+	}
+	
+	// The method to generate the schedule
+	public void generateSchedule()
+	{
+		@SuppressWarnings("rawtypes")
+		Map<String,List> scheduleDict = new HashMap<String,List>();
+		int maxnumber_of_staff = 11;
+		
+		
+		Random rand_num = new Random();
+		int random;
+		
+		
+		
+		// Looping through the dictionary and filling it with empty lists
+		for(int i = 0; i < keysList.length; i++)
+		{
+			List<String> temp_list = new ArrayList<String>();
+			// Placing the given input into the Dictionary after splitting the comma separated input into a list
+			scheduleDict.put(keysList[i], temp_list); 
+		}
+		
+		// Looping through each day
+		for(int i = 0; i < keysList.length; i++)
+		{
+			Map<Integer,Boolean> Indices = new HashMap<Integer,Boolean>();
+			
+			for(int j = 0; j < AvailabilityDict.get(keysList[i]).size(); j++)
+			{
+				Indices.put(j, true);
+			}
+			
+			while( scheduleDict.get(keysList[i]).size() < maxnumber_of_staff )
+			{
+				
+				random = rand_num.nextInt(AvailabilityDict.get(keysList[i]).size());
+				
+				if(Indices.get(random))
+				{
+					scheduleDict.get(keysList[i]).add(AvailabilityDict.get(keysList[i]).get(random));
+					Indices.put(random, false);
+				}
+				
+			}
+			System.out.println("\nThe following will work on " + keysList[i] + ": "+ scheduleDict.get(keysList[i]));
+		}
+		
+		//for(int i = 0; i < keysList.length; i++)
+		//{
+			//System.out.println("\nThe following will work on " + keysList[i] + ": "+ scheduleDict.get(keysList[i]));
+		//}
 	}
 	
 	public static void main(String[] args)
 	{
 		//daynamer e = new daynamer("25/10/2021");
 		//System.out.println(e.determineDay());
-		//scheduler e = new scheduler();
-		//e.showDict();
+		scheduler e = new scheduler();
+		e.generateSchedule();
 	}
 }
