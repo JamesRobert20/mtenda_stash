@@ -35,7 +35,7 @@ public class daynamer {
 	}
 	
 	
-	public  String determineDay() {
+	public String determineDay() {
 		String output = "";
 			
 			InputChecker e = new InputChecker(getDategiven());
@@ -83,13 +83,10 @@ public class daynamer {
 					
 				day_counter = day_counter + e.getDate();
 				String the_day = dayName(day_counter);
-				System.out.println(the_day);
+				output = the_day;
 			}
-			else
-			{
-				output = "Wrong input format! should be dd/mm/yyyy";
-			}
-			return output;
+			
+		return output;
 			
 	}
 
