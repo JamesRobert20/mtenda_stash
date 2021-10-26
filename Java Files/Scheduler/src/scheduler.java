@@ -4,14 +4,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Random;
-import java.io.File;  
-import java.io.FileNotFoundException;  
+import java.io.*;
+import com.opencsv.CSVWriter;
+
+
 
 public class scheduler {
 	// Instructing the constructor to ignore/suppress the warning "raw types" from List
 	@SuppressWarnings("rawtypes")
 	// Declaring a dictionary that will hold each day and list of people available on that day
 	private Map<String,List> AvailabilityDict = new HashMap<String,List>();
+	@SuppressWarnings("rawtypes")
+	private Map<String,List> scheduleDict = new HashMap<String,List>();
 	
 	// Declaring a list of days
 	private String[] keysList = {"Monday","Tuesday","Wednesday","Thursday","Sunday"};
@@ -81,6 +85,7 @@ public class scheduler {
 	}
 	
 	
+	
 	public void showDay(String day)
 	{
 		System.out.println(AvailabilityDict.get(day));
@@ -89,8 +94,6 @@ public class scheduler {
 	// The method to generate the schedule
 	public void generateSchedule()
 	{
-		@SuppressWarnings("rawtypes")
-		Map<String,List> scheduleDict = new HashMap<String,List>();
 		int maxnumber_of_staff = 11;
 		
 		
@@ -132,11 +135,34 @@ public class scheduler {
 			System.out.println("\nThe following will work on " + keysList[i] + ": "+ scheduleDict.get(keysList[i]));
 		}
 		
-		//for(int i = 0; i < keysList.length; i++)
-		//{
-			//System.out.println("\nThe following will work on " + keysList[i] + ": "+ scheduleDict.get(keysList[i]));
-		//}
 	}
+	
+	public void FileWriter(Map<String,List> dictionary)
+	{
+		File thefile = new File("Schedule.csv");
+		try
+		{
+			FileWriter outputfile = new FileWriter(thefile);
+			
+			CSVWriter writer = new CSVWriter(outputfile);
+			
+			String[] header = {"MONDAY","TUESDAY","WEDNESDAY","THURSDAY","SUNDAY"};
+			writer.writeNext(header);
+			
+			for(int i = 0; i < 11; i++ )
+			{
+				String[] theline = {dictionary.get("Monday").get(i).toString(), dictionary.get("Tuesday").get(i).toString(), dictionary.get("Wednesday").get(i).toString(), dictionary.get("Thursday").get(i).toString(), dictionary.get("Sunday").get(i).toString()};
+				writer.writeNext(theline);
+			}
+			
+			writer.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public static void main(String[] args)
 	{
@@ -144,5 +170,10 @@ public class scheduler {
 		//System.out.println(e.determineDay());
 		scheduler e = new scheduler("aval.txt");
 		e.generateSchedule();
+		e.FileWriter(e.getScheduleDict());
+	}
+
+	public Map<String, List> getScheduleDict() {
+		return scheduleDict;
 	}
 }
