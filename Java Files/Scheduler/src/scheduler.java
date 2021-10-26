@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Random;
+import java.io.File;  
+import java.io.FileNotFoundException;  
 
 public class scheduler {
 	// Instructing the constructor to ignore/suppress the warning "raw types" from List
@@ -41,6 +43,43 @@ public class scheduler {
 		}
 		input.close();
 	}
+	
+	// The constructor invoked when a File to read argument is given
+	public scheduler(String filename)
+	{
+		try 
+		{
+			File myfile = new File(filename);
+		    Scanner myReader = new Scanner(myfile);
+		    
+		    while (myReader.hasNextLine()) 
+		    {
+		    	String data = myReader.nextLine();
+		        String[] thestaffdays = data.strip().split(":");
+		        
+		     // Splitting the comma separated string into the list of names
+				String[] value = thestaffdays[1].strip().split(",");
+				
+				// Initializing a list of type ArrayList
+				List<String> the_list = new ArrayList<String>();
+				
+				// Iterating over the input list and saving it to the Array List
+				for(int j = 0; j < value.length; j++)
+				{
+					the_list.add(value[j]);
+				}
+				// Placing the obtained data into the Dictionary after splitting the comma separated input into a list
+				AvailabilityDict.put(thestaffdays[0].strip() , the_list);
+		    }
+		    myReader.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+		    System.out.println("An error occurred in reading the file.");
+		    e.printStackTrace();
+		}
+	}
+	
 	
 	public void showDay(String day)
 	{
@@ -103,7 +142,7 @@ public class scheduler {
 	{
 		//daynamer e = new daynamer("25/10/2021");
 		//System.out.println(e.determineDay());
-		scheduler e = new scheduler();
+		scheduler e = new scheduler("aval.txt");
 		e.generateSchedule();
 	}
 }
